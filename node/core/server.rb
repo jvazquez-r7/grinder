@@ -92,6 +92,9 @@ module Grinder
 				end
 				
 				def do_POST( request, response )
+
+					print_status("POST to #{request.path}")
+
 					if( request.path == '/testcase_crash' )
 						success                  = @@reductor ? @@reductor.testcase_crash( request.query['hash'] ) : false
 						response.status          = success ? 200 : 404
@@ -122,6 +125,9 @@ module Grinder
 				end
 				
 				def do_GET( request, response )
+
+					print_status("GET to #{request.path}")
+
 					if( request.path == '/grinder' )
 						tcpm_update
 						response.status          = @@fuzzers.length > @@index ? 200 : 404
