@@ -64,6 +64,8 @@ module Grinder
 					'verified'      => verified
 				}
 
+				print_status("Crash to send: #{params.inspect}")
+
 				return _send_request1( params )
 			end
 			
@@ -126,6 +128,8 @@ module Grinder
 				rescue Errno::ETIMEDOUT
 					print_error( "Timeout requesting '#{uri}'." )
 				end
+
+				print_status("Response: #{response.inspect}")
 				
 				return response
 
