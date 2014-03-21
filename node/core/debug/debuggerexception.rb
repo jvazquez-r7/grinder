@@ -282,6 +282,7 @@ module Grinder
 		
 					rescue ::Exception => e
 						print_error( "Error, unable to save the log file '#{src_file}' (#{e.message})" )
+						print_status(e.backtrace.join("\n"))
 						text = nil
 					end
 					
