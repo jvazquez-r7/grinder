@@ -64,7 +64,7 @@ module Grinder
 					'verified'      => verified
 				}
 
-				print_status("Crash to send: #{params.inspect}")
+				#print_status("Crash to send: #{params.inspect}")
 
 				return _send_request1( params )
 			end
