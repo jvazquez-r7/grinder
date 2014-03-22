@@ -130,7 +130,7 @@ module Grinder
 
 					if( request.path == '/grinder' )
 						tcpm_update
-						print_status("!!!!!!Request to grinder: #{@@index / @@fuzzers}")
+						print_status("!!!!!!Request to grinder: #{@@index} / #{@@fuzzers.length}")
 						response.status          = @@fuzzers.length > @@index ? 200 : 404
 						response['Content-Type'] = 'text/html; charset=utf-8;'
 						response.body            = @@fuzzers.length > @@index ? @@fuzzers[ @@index ][ 1 ] : ''
