@@ -273,7 +273,6 @@ module Grinder
 						end
 
 						listener = Listen.to(fuzzdir) do |modified, added, removed|
-
 							file_name = ::File.basename(added)
 							ext = ::File.extname(file_name)
 							::File.open( "#{added}", 'r' ) do | f |
