@@ -7,6 +7,7 @@
 require 'thread'
 require 'webrick'
 require 'base64'
+require 'listen'
 require 'core/logging'
 require 'core/webstats'
 
@@ -221,6 +222,7 @@ module Grinder
 				@dummy_websocket = nil
 				@server          = nil
 				@thread          = nil
+				@listeners       = []
 				
 				GrinderServlet.reduction( reduction )
 				
@@ -235,7 +237,7 @@ module Grinder
 				
 				# if no reduction object is specified we treat this server instance as a server for reduction/verification 
 				# and not fuzzing thus we dont send an initial status update or load any of the fuzzers.
-				if( not reduction )
+				unless reduction
 					$fuzzers_dir = $fuzzers_dir + ( $fuzzers_dir.end_with?( "\\" ) ? '' : "\\" )
 
 					fuzzer_directories = [ $fuzzers_dir ]
@@ -269,6 +271,20 @@ module Grinder
 							end
 							
 						end
+
+						listener = Listen.to(fuzzdir) do |modified, added, removed|
+
+							file_name = ::File.basename(added)
+							ext = ::File.extname(file_name)
+							::File.open( "#{added}", 'r' ) do | f |
+								print_status( "Adding fuzzer '#{file_name}' to the testcase server" )
+								GrinderServlet.add_fuzzer(file_name.gsub(/#{ext}$/, ""), f.read( f.stat.size ))
+							end
+						end
+
+						@listeners << listener
+
+						listener.start # not blocking
 						
 					end
 				end
@@ -317,6 +333,9 @@ module Grinder
 			
 			def stop
 				print_status( "Stopping the testcase server" )
+				@listeners.each do |l|
+					l.stop
+				end
 				if( @thread )
 					@thread.kill
 					@thread = nil
