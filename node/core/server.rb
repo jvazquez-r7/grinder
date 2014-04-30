@@ -273,11 +273,14 @@ module Grinder
 						end
 
 						listener = Listen.to(fuzzdir) do |modified, added, removed|
-							file_name = ::File.basename(added)
-							ext = ::File.extname(file_name)
-							::File.open( "#{added}", 'r' ) do | f |
-								print_status( "Adding fuzzer '#{file_name}' to the testcase server" )
-								GrinderServlet.add_fuzzer(file_name.gsub(/#{ext}$/, ""), f.read( f.stat.size ))
+							added.each do |a|
+								file_name = ::File.basename(a)
+								ext = ::File.extname(file_name)
+								fuzzer_name = file_name.gsub(/#{ext}$/, "")
+								::File.open( "#{a}", 'r' ) do | f |
+									print_status( "Adding fuzzer '#{fuzzer_name}' to the testcase server" )
+									GrinderServlet.add_fuzzer(fuzzer_name, f.read( f.stat.size ))
+								end
 							end
 						end
 
