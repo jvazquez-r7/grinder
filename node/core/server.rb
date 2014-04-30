@@ -272,7 +272,8 @@ module Grinder
 							
 						end
 
-						listener = Listen.to(fuzzdir) do |modified, added, removed|
+						# The :ignore option allows to avoid recursive additions
+						listener = Listen.to(fuzzdir, ignore: /IE\/|CM\/|FF\/|SF\//) do |modified, added, removed|
 							added.each do |a|
 								file_name = ::File.basename(a)
 								ext = ::File.extname(file_name)
